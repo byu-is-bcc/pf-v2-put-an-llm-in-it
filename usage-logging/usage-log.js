@@ -40,8 +40,14 @@
 const fs = require("fs");
 const path = require("path");
 
-// USAGE_LOG wins if set. Otherwise the log sits next to this file.
-const LOG_PATH = process.env.USAGE_LOG || path.join(__dirname, "usage.log");
+// USAGE_LOG wins if set. Otherwise `usage.log` in the working directory, which
+// is what the counting commands in README.md assume and what the shell and
+// Python snippets do. All three defaults have to agree or your count is split
+// across files you forgot about.
+//
+// Setting USAGE_LOG is still the right move for anything you run from more than
+// one directory. Relative is the honest default, not the good one.
+const LOG_PATH = process.env.USAGE_LOG || "usage.log";
 
 // One use is one line, so tabs and newlines cannot survive in a field.
 function clean(value) {

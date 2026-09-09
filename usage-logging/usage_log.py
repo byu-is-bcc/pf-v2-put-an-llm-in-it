@@ -35,8 +35,14 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# USAGE_LOG wins if set. Otherwise the log sits next to this file.
-LOG_PATH = Path(os.environ.get("USAGE_LOG") or Path(__file__).resolve().with_name("usage.log"))
+# USAGE_LOG wins if set. Otherwise `usage.log` in the working directory, which
+# is what the counting commands in README.md assume and what the shell and
+# JavaScript snippets do. All three defaults have to agree or your count is
+# split across files you forgot about.
+#
+# Setting USAGE_LOG is still the right move for anything you run from more than
+# one directory. Relative is the honest default, not the good one.
+LOG_PATH = Path(os.environ.get("USAGE_LOG") or "usage.log")
 
 # UTC so the format is identical in all three snippets and sorts lexicographically.
 TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
