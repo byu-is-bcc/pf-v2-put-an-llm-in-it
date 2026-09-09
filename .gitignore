@@ -1,0 +1,37 @@
+# Secrets. A real secret in git HISTORY is an automatic fail on the
+# Portfolio Factory rubric, and deleting the file later does not remove it.
+.env
+.env.*
+!.env.example
+
+# Usage logs.
+#
+# The log is your evidence, so the default here is to COMMIT usage.log.
+# A log nobody can see proves nothing.
+#
+# If your detail field ended up containing absolute paths, filenames, or
+# anything else you would not want public, uncomment the line below, fix the
+# logging call, and commit a redacted screenshot instead. Say so in your README.
+# usage.log
+
+# Local-only variants, for when a log genuinely cannot be published.
+usage.private.log
+*.local.log
+usage-logging/usage.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# OS and editor
+.DS_Store
+.vscode/
+.idea/

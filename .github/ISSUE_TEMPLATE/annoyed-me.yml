@@ -1,0 +1,70 @@
+name: Something annoyed me while using it
+description: Friction you hit while actually using the tool. File this the moment it happens.
+title: "[Friction] "
+labels: ["friction"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the issue type that matters most in this repository. It is not a bug report. Nothing has to be broken.
+
+        File it in the two minutes after it happens, while you still remember the specific thing. Friction you write down on Tuesday night is honest evidence. Friction you reconstruct on day twenty-nine is a guess.
+
+  - type: input
+    id: date
+    attributes:
+      label: When did this happen
+      description: The date, and the time if you remember it. This gets compared to your commit history, so use the real one.
+      placeholder: 2026-03-14, around 11pm
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-i-was-doing
+    attributes:
+      label: What I was actually doing
+      description: The real task, not a reproduction case. Why you had the tool open at all.
+      placeholder: Clearing the desktop before a screen share, about 40 screenshots in the folder.
+    validations:
+      required: true
+
+  - type: textarea
+    id: the-friction
+    attributes:
+      label: What annoyed me
+      description: Be specific and be plain. "I had to type the full path again" is a better entry than "poor usability."
+      placeholder: |
+        I had to type the folder path even though it was the folder I was already in. I have typed
+        that same path every single time, and I mistyped it twice today.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: How often does this hit me
+      options:
+        - Every time I use it
+        - Most times
+        - Now and then
+        - This is the second time
+        - First time it has come up
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-i-want-instead
+    attributes:
+      label: What I want instead
+      description: Optional. If you already know the fix, say it. If you do not, leave this empty rather than inventing one.
+      placeholder: Default to the current directory when no path is given.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: recurrence
+    attributes:
+      label: Recurrence
+      options:
+        - label: This has now happened at least twice, so it needs a test and not just a fix
+          required: false
