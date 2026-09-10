@@ -1,0 +1,21 @@
+{
+  "_comment": "USD per million tokens. Free-tier rows are 0. Verified 2026-09-10. Re-check before you publish a cost number.",
+  "stub": {
+    "default": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 }
+  },
+  "ollama": {
+    "default": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 }
+  },
+  "gemini": {
+    "default": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 },
+    "gemini-3.5-flash-lite": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 }
+  },
+  "groq": {
+    "default": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 },
+    "openai/gpt-oss-20b": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 }
+  },
+  "openrouter": {
+    "default": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 },
+    "google/gemma-4-31b-it:free": { "input_per_mtok": 0.0, "output_per_mtok": 0.0 }
+  }
+}

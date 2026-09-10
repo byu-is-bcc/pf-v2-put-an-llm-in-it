@@ -1,0 +1,72 @@
+# Three jobs, and two of them are supposed to be red until you finish.
+#
+#   smoke (must be green)     scaffold works on the stub: import, seed, health,
+#                             analyze, UI
+#
+#   failure-modes (red until  FAILURE_MODES.md rows. Mix of passes and fails on
+#   you finish)               a fresh clone; green when every row is true
+#
+#   gates (red until you      MAKE_IT_YOURS.md has no TODO, and the eval gate
+#   finish)                   passes (20+ cases, beats baseline)
+#
+# A red X on failure-modes or gates on day one means the template is working.
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    name: smoke (must be green)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Smoke suite
+        run: pytest -v tests/test_smoke.py
+        env:
+          LLM_PROVIDER: stub
+      - name: Check for committed secrets
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$'; then
+            echo "::error::A real .env file is tracked in git. Remove it and rotate the credentials."
+            exit 1
+          fi
+          echo "No tracked .env files."
+
+  failure-modes:
+    name: failure-modes (red until you finish)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Every row of FAILURE_MODES.md
+        run: pytest -v tests/test_failure_modes.py
+        env:
+          LLM_PROVIDER: stub
+
+  gates:
+    name: gates (red until you finish)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Anti-sameness and eval gate
+        run: pytest -v tests/test_gates.py
+        env:
+          LLM_PROVIDER: stub

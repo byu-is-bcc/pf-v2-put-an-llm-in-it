@@ -1,196 +1,187 @@
-# V2 — The Thing You Actually Use
+# V2 — Put an LLM In It
 
-**Portfolio Factory · Development · Practitioner tier · 20 to 25 hours plus 30 days of use · Extends IS 401 or IS 403, or standalone**
+**Portfolio Factory · Development · Practitioner tier · 15 to 25 hours · Extends V1, or standalone with the seed**
 
 > **Prerequisite: [Project 000](https://github.com/byu-is-bcc/pf-000-portfolio-site).** Build your site first. This project ships with an entry on it.
 
-**There is no application in this template, and that is deliberate.** Every other starter in this program hands you a working reference implementation to rewrite. This one cannot, because the tool you build has to be one you personally want, and nobody can pick that for you.
-
-What ships here is the evidence apparatus: a changelog, issue templates, usage logging in three languages, a commit-distribution helper, and a 30-day record in `EVIDENCE.md`. The deliverable of this project is proof of sustained use. The code is just what generates it.
+**Hard constraint: free tier only. No credit card.** The providers this template supports are Google AI Studio (Gemini), Groq, OpenRouter `:free` models, and Ollama on your own machine. OpenAI and Anthropic are out of scope here because both ask for payment details up front. Details and verification dates are in `PROVIDERS.md`.
 
 ---
 
 ## Replace everything above this line with your own README
 
-The shape below is what a finished version looks like. Fill in the angle brackets, delete the italic notes, keep the headings.
+The template below is what a finished version looks like. Delete the instructions, keep the shape.
 
 ---
 
-## What this is
+## What this project is
 
-`<One sentence. What the tool does and what problem of yours it solves.>`
+Add one LLM feature to an application you own. Keep the API key on the server. Measure whether the feature actually works.
 
-*Not "a productivity tool built with Python." Something closer to "renames the screenshots on my desktop into dated, searchable filenames, because I take about forty a week and could never find any of them."*
+That is the whole assignment. A chat bubble is allowed and it is also the most common, least interesting option. Prefer parsing, classification, summarization, semantic search, or natural-language-to-query, and prefer structured JSON output over free-form prose. Getting a model to return schema-valid JSON, and handling it when it does not, is what integration work looks like.
 
-## Who this is for
+**What you will actually produce:** a live app with one LLM-backed endpoint, an eval set with a stated baseline and a pass rate, a prompt-injection write-up that does not claim victory, and measured cost and latency from real calls. The claim at the top of your finished README has to contain a number a stranger can check.
 
-`<Who should use this.>`
-
-*This is the section the rest of your portfolio does not have, and the reason it is here: the honest answer is allowed to be "me."*
-
-*"For me. I am the only user and I have no plans to add a second one" is a complete and respectable answer. It is more respectable than inventing a target market for a script that renames your screenshots. If other people do use it, say how many and who they are. If it is one roommate, say one roommate.*
-
-*State the limits here too. What it does not handle, what it assumes about your machine, what would break on someone else's setup. A tool that only works on your laptop is fine. A tool that only works on your laptop and does not say so is not.*
+---
 
 ## The claim
 
-> Used `<N>` times over `<M>` days. `<K>` issues filed and closed. Current version `<X>`, changelog in the repository.
+> I added an LLM feature to my own application, kept the key off the client, and measured whether the feature actually works.
 
-*Every number in that sentence is checkable by a stranger in under a minute, which is the entire point. `<N>` comes from your usage log, `<M>` from its first and last dates, `<K>` from your closed issues, `<X>` from `CHANGELOG.md`. Do not round any of them up.*
+Finished shape, with your numbers:
 
-*One number belongs in the first line of this README and on your Project 000 site: how many times you used it. Not the feature count.*
-
-## How to verify this
-
-Same list an alumni reviewer will use.
-
-- [ ] Usage evidence over 30 days: logs, commit dates, a screenshot of your shell history, anything real
-- [ ] A `CHANGELOG.md` with dated entries that reference actual changes
-- [ ] At least 5 issues filed and closed in the repository, describing problems you hit while using it
-- [ ] At least 15 commits spread across the period, not clustered in one weekend
-- [ ] Tests on whatever broke twice, because the second break is the signal
-- [ ] A README that honestly says who this is for, which may legitimately be "me"
-- [ ] `EVIDENCE.md` filled in week by week, with dates that match your git history
-- [ ] No secrets in git history: `git log --all --diff-filter=A --name-only | grep -i env`
-
-**Every item on that list is a public artifact with a timestamp on it.** Issues have dates. Commits have dates. Changelog entries can be checked against the commits they claim to describe. This rubric is unusually hard to fake and unusually easy to satisfy honestly, and both of those are on purpose.
+> `<feature>` on `<app>`, key server-side only. Eval set of `<N>` cases: `<P>%` pass vs baseline `<B>%`. p50 `<X>` ms, about `$<C>` per request on `<provider>`. Injection attempt documented in `PROMPT_INJECTION.md`.
 
 ---
 
 ## Start here
 
-Nothing to install. There is no application to run.
-
 ```bash
 git clone <your-repo-url> && cd <your-repo>
-./scripts/commit-distribution.sh     # one commit, from the template. Day one looks like this.
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env                                # defaults to LLM_PROVIDER=stub
+uvicorn app.main:app --reload
 ```
 
-Then, in order:
+Open **http://localhost:8000/** for the UI and **http://localhost:8000/docs** for the API. The database creates itself and loads twelve snippets on first run. Try `POST /snippets/4/analyze` — it runs against the stub with no account.
 
-**1. Decide what you are building** and write the one sentence at the top of this README. Before any code.
-
-**2. Wire up usage logging.** Copy one snippet out of `usage-logging/` into your tool on day one. Day-one logs cannot be recreated on day thirty, and the log is the primary evidence for this entire project.
-
-**3. Open `EVIDENCE.md` and fill in the start date.** Then use it.
+```bash
+pytest -v tests/test_smoke.py          # must be green
+pytest -v                              # mix of green and red on day one
+python -m evals.run                    # harness works on five seed cases
+python -m evals.run --gate             # red until you have a real eval set
+```
 
 ---
 
-## Your job
+## About the red X on this repository
 
-**1. Pick something you would use even if nobody were grading it.** This is the whole constraint, and it is the one people fail. A habit tracker you do not open is worth nothing here. A script that renames your screenshots, which you run forty times a week, is worth a great deal.
+Three CI jobs. Two of them are supposed to disagree with smoke until you are done.
 
-The test: if the course ended tomorrow, would you keep running it? If the honest answer is no, pick something else. You will find out on day nine either way, and day one is the cheaper time to find out.
+**`smoke (must be green)`** proves the scaffold works on the stub: import, seed, health, analyze, UI.
 
-**2. Scope it small enough that you will actually use it.** Small enough to finish version 0.1 in the first three or four days, because the thirty days of use start after that. The evidence is the usage, not the feature list.
+**`failure-modes (red until you finish)`** runs every row of `FAILURE_MODES.md`. A fresh clone is a mix of passes and failures. It goes green when the last TODO in `app/feature.py` is gone and every row's Actual column matches Expected.
 
-**3. Use it every day.** Actually use it. The log will tell the truth about this.
+**`gates (red until you finish)`** fails while `MAKE_IT_YOURS.md` still has `TODO`, and while the eval gate reports fewer than 20 cases or a pass rate that does not beat the baseline.
 
-**4. File issues against yourself.** When it annoys you, open an issue right then, from the "Something annoyed me while using it" template. Not at the end of the week and not from memory. The friction you notice at 11pm on a Tuesday is the specific thing a hiring manager wants to see you write down, and it is gone by Thursday.
-
-Then close them, referencing the commit that fixed each one. Five filed and closed is the floor.
-
-**5. Keep `CHANGELOG.md` dated.** Entries that name the behavior that changed. "Various fixes" is not an entry.
-
-**6. Write tests on whatever broke twice.** Not on everything. The second break is the signal that a case is genuinely hard and you will keep getting it wrong from memory. One test on the thing that bit you twice reads better than forty on things that never broke, and it is the honest reason to write a test.
-
-**7. Add it to your Project 000 site** with the claim from above.
+A red X on day one on those two jobs means the template is working.
 
 ---
 
 ## What is here
 
 ```
-CHANGELOG.md                    Keep a Changelog format, with example entries to delete
-EVIDENCE.md                     your 30-day record. Fill in weekly, not at the end.
-.github/ISSUE_TEMPLATE/
-  annoyed-me.yml                the one that matters. Self-filed friction reports.
-  bug-report.yml                for things that are actually broken
-  config.yml                    turns off blank issues, so every issue has a shape
-usage-logging/
-  usage_log.py                  Python. Copy in, call log_use().
-  usage-log.js                  Node. Same idea.
-  usage-log.sh                  Shell. Source it, or inline the two lines.
-  README.md                     wiring instructions and what not to log
-scripts/
-  commit-distribution.sh        prints your commits per week over the last 30 days
-.gitignore                      covers .env, and read the usage.log comment before you commit
+app/
+  main.py          snippets CRUD + POST /snippets/{id}/analyze
+  feature.py       reference structured-output feature. Replace it.
+  llm.py           finished. One client, four free providers, plus stub.
+  limits.py        finished. Per-caller rate limit + daily caps.
+  db.py, seed.py   finished. Snippets domain, deliberately not a bookstore.
+static/            minimal UI. No keys. Talks only to same-origin endpoints.
+evals/
+  run.py           harness. --baseline and --gate flags.
+  baseline.py      regex baseline so "85%" has something to stand next to.
+  cases.jsonl      five seed cases. You need twenty or more.
+  prices.json      USD-per-million-token table. Free tiers are 0.
+tests/
+  test_smoke.py           green on day one
+  test_failure_modes.py   mix; maps to FAILURE_MODES.md
+  test_gates.py           red until MAKE_IT_YOURS and the eval gate pass
+MAKE_IT_YOURS.md          feature decision record. Anti-sameness gate.
+FAILURE_MODES.md          every ugly path, Expected vs Actual.
+PROMPT_INJECTION.md       honest write-up. Do not claim you prevented it.
+MEASUREMENTS.md           tokens, cost, latency from real calls.
+PROVIDERS.md              free-tier verification notes with dates.
 ```
 
-No `src/`, no `app/`, no `index.html`. That is yours to create, in whatever language and shape fits the thing you picked.
+`db.py`, `seed.py`, `llm.py`, and `limits.py` are finished and are not the assignment. Your hours belong in the feature, the eval set, the injection write-up, and the measurements.
 
 ---
 
-## Stack
+## Your job
 
-Whatever fits. This is one of the few projects in the program where a CLI tool, a browser extension, a mobile app, and a shell script all qualify equally.
+**1. Decide the feature.** Open `MAKE_IT_YOURS.md` before you write a prompt. Pick from the menu there. Shipping the reference "classify this snippet" feature unchanged fails the anti-sameness gate on purpose.
 
-Pick the one that removes the most friction between you and daily use, because daily use is the deliverable. A shell script you run from the terminal you already have open beats a mobile app you have to install on a phone you have to unlock. Familiarity is a feature here. Twenty-five hours is not enough to learn a new framework and also sustain thirty days of use, and if you spend the first two weeks on tooling you will have no usage evidence at all.
+**2. Prefer your own V1 app.** The snippets service is a seed for cold entry. If you already built a backend in V1, attach the LLM feature there and delete this domain. Say which path you took in `MAKE_IT_YOURS.md`.
 
----
+**3. Keep the key on the server.** The browser calls your backend; your backend calls the provider. This is the payoff of a thread that started in V0 when you watched a key leak in devtools. An LLM key is metered. A leaked one is someone else's bill, charged to you.
 
-## Picking the thing
+**4. Set the limits from measurements.** The numbers in `limits.py` ship tiny on purpose. Fill in `MEASUREMENTS.md` first, then set `LLM_REQUESTS_PER_MINUTE`, `LLM_DAILY_REQUEST_CAP`, and `LLM_DAILY_TOKEN_CAP` to values you can defend out loud.
 
-The good ones are almost always smaller than you expect and solve a problem you have already complained about out loud.
+**5. Handle the ugly paths.** Work through `FAILURE_MODES.md`. The stub can force malformed JSON, truncation, refusal, injection, timeout, and 429 via `LLM_STUB_FAILURE` so you can test branches a real provider will not produce on demand.
 
-Shapes that have worked:
+**6. Build a real eval set.** Twenty or more labeled cases in `evals/cases.jsonl`. Run `python -m evals.run --gate`. It fails until your pass rate beats the regex baseline by at least five points. If it cannot, the LLM is the wrong tool — say so and pick a different feature.
 
-- Renames or files something you download constantly: screenshots, receipts, PDFs from Learning Suite
-- Turns one format you are handed into the format you actually need
-- Checks something you keep forgetting to check, and says nothing when it is fine
-- Answers a question you look up more than once a week, from data only you have
-- Automates the four commands you type in the same order every morning
+**7. Attempt prompt injection against yourself.** Use the planted seed row, or write a worse one. Record what happened in `PROMPT_INJECTION.md`. Partial mitigations are expected. A claim that you "prevented" prompt injection is a fail.
 
-**The disqualifier: if it is a category rather than a problem, it is wrong.** "A finance tracker" is a category. "Tells me how much of this month's food budget is left, from the CSV my bank exports" is a problem. You know which one you will still be running on day thirty.
+**8. Deploy on a free host.** Render, Railway, Fly, or Azure App Service. A reviewer needs to hit your live `/docs` without installing anything. Stick to free-tier LLM providers in production too.
+
+**9. Add it to your Project 000 site** with the claim above.
 
 ---
 
-## The commit distribution is part of the rubric
+## Feature menu
 
-A repository with 15 commits across 30 days looks different from one with 15 commits on a Saturday, and only one of them is evidence of the thing this project claims. Anyone reading your repository can see which one you have in about four seconds, because GitHub graphs it on the front page.
+| Feature | Good for | Fails at | Structured output |
+|---|---|---|---|
+| Parse / extract | Turning messy text into fields | Ambiguous formats, handwriting-as-text | Natural fit |
+| Classify / route | Labels, triage, folding into buckets | Fine-grained sentiment, overlapping labels | Natural fit |
+| Summarize | Long notes into one sentence | Faithfulness; will invent detail | Possible |
+| Semantic search | "Find notes like this" over your data | Exact match; needs embeddings | Partial |
+| NL → query | Letting a user ask your DB in English | Injection into the query; wrong joins | Natural fit |
+| Chat over your data | Open-ended Q&A | Evaluation, cost, injection surface | Weak fit |
 
-```bash
-./scripts/commit-distribution.sh          # last 30 days, commits per week, with the gaps
-./scripts/commit-distribution.sh 45       # or any window you want
-```
-
-Run it weekly, not on day twenty-nine. It exists so you catch a five-day gap while there are still twenty-five days left to fix it. On day twenty-nine it only tells you what your rubric score already is.
-
-Commit when you change something, which if you are genuinely using the tool will happen at an uneven, bursty, real-looking rate. That is fine. Uneven is not the same as clustered. What the rubric is looking for is whether the work happened over the period it claims.
+Chat is last on purpose. If you pick it, your eval set and your injection write-up have more work to do, not less.
 
 ---
 
-## Core-extension path
+## Free providers only
 
-If you took **IS 401**, your team's README probably has a "Not Complete" list. Finishing your own team's stated backlog is a legitimate and unusually honest version of this project: the problems are already documented, by you, from real use.
+| Provider | Account | Credit card | Default model in this template | Notes |
+|---|---|---|---|---|
+| stub | None | No | `stub-1` | Fake. For CI and day one. Not evidence. |
+| Ollama | None | No | `llama3.1:8b` | Local. Install from ollama.com. |
+| Gemini | Google AI Studio | No for Free tier | `gemini-3.5-flash-lite` | Limits vary; check your dashboard. |
+| Groq | GroqCloud | No for Free plan | `openai/gpt-oss-20b` | Org-level rate limits. |
+| OpenRouter | OpenRouter | No for `:free` models | `google/gemma-4-31b-it:free` | 50 req/day until you buy credits. |
 
-Two conditions, and they are not negotiable:
+Verified 2026-09-10. Re-check before you depend on a model id. `PROVIDERS.md` has the commands.
 
-**Get permission from every contributor.** All of them, in writing, before you start.
+---
 
-**Start a fresh repository.** Author metadata survives a fork, and a repository full of your teammates' commits presented as your portfolio project is the kind of thing that ends an interview. Copy the code you have permission to copy, credit the original team in your README, and let your own commit history start on day one.
+## How to verify this
 
-The same applies to **IS 403** group work.
+Same list an alumni reviewer will use.
+
+- [ ] Live URL; `/docs` loads without an account
+- [ ] LLM calls go through the server; no key in the client, the repo, or response bodies
+- [ ] Rate limit and daily cap demonstrated (screenshot or log of a 429 / 503)
+- [ ] `FAILURE_MODES.md` Actual column filled from real runs, not from reading the code
+- [ ] Eval set of at least 20 cases; `python -m evals.run --gate` exits 0
+- [ ] Baseline number reported next to the feature number
+- [ ] `MEASUREMENTS.md` has tokens, cost, p50, p95 from a real provider (not the stub)
+- [ ] `PROMPT_INJECTION.md` records an attempt and does not claim the problem is solved
+- [ ] `MAKE_IT_YOURS.md` has no `TODO`; the feature is not the unchanged seed
+- [ ] No secrets in git history
 
 ---
 
 ## Resume one-liners
 
-Written after you have your real numbers. Examples of the shape:
+Written after you have real numbers.
 
-- Built and maintained a personal CLI tool used 213 times over 34 days, filing and closing 9 issues from problems encountered in daily use.
-- Maintained a tool past its first working version for 30 days, with a dated changelog across 4 releases and regression tests added on the two failures that recurred.
-- Shipped and sustained a personal utility with 22 commits distributed across a month, driven by self-reported friction rather than a feature plan.
-
-The second one is the strongest. Almost every student portfolio contains projects that were finished and abandoned; very few contain evidence of a project that was maintained.
+- Added a structured-extraction endpoint to a personal API, server-side key only, 24-case eval at 88% vs 62% regex baseline, p50 410 ms on Groq free tier.
+- Shipped classification over user-submitted notes with per-IP rate limits and a daily token cap, documented a successful prompt-injection attempt and the partial mitigations that remained.
+- Replaced an ad-hoc chat prototype with schema-constrained JSON output and a measured cost of $0.00/request on Gemini free tier at 12k tokens/day budgeted.
 
 ---
 
 ## Who hires for this
 
-**Startups and enterprise SaaS.** Named accounts hiring BYU IS students into engineering: **Epic Systems**, **Enzy**, **nCino**, **Redo**, **Acima Credit**, **BambooHR**, **Podium**.
+**Startups and enterprise SaaS building AI features into existing products.** Named accounts hiring BYU IS students into engineering: **Epic Systems**, **Enzy**, **nCino**, **Redo**, **Acima Credit**, **BambooHR**, **Podium**.
 
-At a startup, the person who maintains what they ship is worth several people who ship and move on, and everyone doing the hiring has been burned by the second kind. Development is still the largest single track at roughly 25% of BYU IS placements.
+The skill this rung exercises — calling a model from a backend, constraining the output, and proving it works on a held-out set — is closer to what those teams ask a new grad to do than training a model from scratch.
 
 Those names illustrate the kind of work, not a target list. 73% of the companies that hired BYU IS students in the last five years hired exactly one.
 
@@ -198,15 +189,15 @@ Those names illustrate the kind of work, not a target list. 73% of the companies
 
 ## Where people get stuck
 
-**"I cannot think of anything."** You are looking for something impressive. Look instead for something you complained about in the last week. Check your downloads folder, your shell history, and the note on your phone where you keep the same three reminders. There is a project in one of them.
+**"I will just add a chat widget."** You can. Your eval set will be worse, your injection surface will be larger, and your project will look like everyone else's. Read the feature menu again.
 
-**"I stopped using it on day six."** Then it was the wrong thing and you learned that cheaply. Say so in your changelog, pick something else, and restart the thirty days. Two false starts and a real thirty days is a better project than thirty days of pretending.
+**"The stub passes my evals."** The stub is a regex with a JSON wrapper. It proves the harness runs. Switch `LLM_PROVIDER` to a real free provider before you write a number in your README.
 
-**"Nothing annoys me about it."** Either you are not using it or you are not paying attention. Nobody uses their own software for a week without wanting to change something. Look at the moments you hesitated, retyped a flag, or checked the output twice because you did not trust it.
+**"My pass rate is worse than the baseline."** Then the LLM is not earning its keep on this task. That is a legitimate finding. Change the feature or narrow the schema until the margin is real.
 
-**"Can I backfill the changelog?"** You can, and it will not survive contact with a reviewer, because your changelog dates get compared to your commit dates. Fifteen entries added in one commit on day twenty-nine is a specific and legible failure. Writing the entry takes forty seconds on the day it happens.
+**"I prevented prompt injection."** No you did not. Document what you tried, what still worked against you, and what you refuse to let model output do unsupervised.
 
-**"My tool is too simple to have issues."** Issues here are not bug reports about a complex system. They are "the output has no newline at the end and it eats my prompt," "I always have to remember the path, it should default to the current directory," "it fails silently when the folder is empty." Those are the real ones. Write them exactly that plainly.
+**"I need a credit card for the good models."** Not for this project. Stay on the free tier. If a provider changes terms, swap providers — that is why `llm.py` is one client and four base URLs.
 
 ---
 

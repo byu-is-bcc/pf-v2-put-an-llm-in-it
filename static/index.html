@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snippets</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">Portfolio Factory · V2 seed</p>
+      <h1>Snippets</h1>
+      <p class="lede">
+        A notes service with one server-side LLM feature. The API key never
+        leaves the backend. Replace this feature with yours.
+      </p>
+      <p id="health" class="meta">Checking health…</p>
+    </header>
+
+    <section aria-labelledby="list-heading">
+      <h2 id="list-heading">Saved snippets</h2>
+      <ul id="list"></ul>
+    </section>
+
+    <section aria-labelledby="add-heading">
+      <h2 id="add-heading">Add one</h2>
+      <form id="create">
+        <label>Title <input name="title" required maxlength="200" /></label>
+        <label>Body <textarea name="body" rows="6" required></textarea></label>
+        <label>Tags <input name="tags" placeholder="comma,separated" maxlength="200" /></label>
+        <button type="submit">Save</button>
+      </form>
+      <p id="form-status" class="meta" role="status"></p>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

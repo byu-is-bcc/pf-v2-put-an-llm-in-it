@@ -4,20 +4,10 @@
 .env.*
 !.env.example
 
-# Usage logs.
-#
-# The log is your evidence, so the default here is to COMMIT usage.log.
-# A log nobody can see proves nothing.
-#
-# If your detail field ended up containing absolute paths, filenames, or
-# anything else you would not want public, uncomment the line below, fix the
-# logging call, and commit a redacted screenshot instead. Say so in your README.
-# usage.log
-
-# Local-only variants, for when a log genuinely cannot be published.
-usage.private.log
-*.local.log
-usage-logging/usage.log
+# Local database. Regenerated on first run.
+*.db
+*.sqlite
+*.sqlite3
 
 # Python
 __pycache__/
@@ -26,10 +16,9 @@ __pycache__/
 venv/
 .pytest_cache/
 
-# Node
-node_modules/
-npm-debug.log*
-yarn-error.log*
+# Eval run artifacts you might dump locally
+evals/last_run.json
+evals/out/
 
 # OS and editor
 .DS_Store
